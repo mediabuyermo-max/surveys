@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>استبيان الأطباء</title>
+  <link rel="stylesheet" href="survey.css">
+</head>
+
+<body>
+
+  <div class="bar">
+    <div class="bar-in">
+      <div class="progress" aria-hidden="true"><i id="pbar"></i></div>
+      <span class="pct" id="pct">٠٪</span>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <header class="hero">
+      <span class="brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M12 21s-7-4.4-9.3-9A5.2 5.2 0 0 1 12 6.5 5.2 5.2 0 0 1 21.3 12C19 16.6 12 21 12 21z" />
+          <path d="M8 12h2.5l1.5-2.5 2 5 1.5-2.5H17" />
+        </svg>
+        صحة وعافية
+      </span>
+      <h1>رأي حضرتك يصنع الفرق</h1>
+      <ul class="meta">
+        <li>من ٦ إلى ٧ دقائق</li>
+        <li>١٩ سؤالًا</li>
+        <li>الاسم اختياري</li>
+      </ul>
+    </header>
+
+    <section class="card intro">
+      <p>أهلًا بحضرتك يا دكتور،</p>
+      <p>نحن فريق «صحة وعافية»، نبني منصة مصرية لتسهيل التواصل بين العيادة والمعامل والصيدليات والتمريض المنزلي
+        والمستشفيات. ورأي حضرتك كطبيب سيحدد ما نبنيه أولًا.</p>
+      <p><b>لماذا نسأل حضرتك؟</b> لأن حضرتك الأدرى بطبيعة عملك. لا نريد أن نبني المنصة وفق تصوراتنا فقط، بل وفق احتياجات
+        الأطباء الفعلية. وسيساعدنا رأيك في تحديد ما نبدأ به، وما نؤجله، وما لا حاجة إليه.</p>
+      <div class="gift">🎁 عند إكمال الاستبيان وترك رقمك في النهاية، <b>سيصلك كود شهر مجاني</b> عند إطلاق المنصة.</div>
+      <div class="privacy">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <rect x="4" y="10" width="16" height="11" rx="2" />
+          <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+        </svg>
+        <span>تُستخدم إجاباتك لتطوير المنصة فقط، وتُعامل بسرية تامة وتُحلَّل مجمّعةً، ولن تُشارك مع أي جهة خارج فريقنا،
+          وذلك وفق قانون حماية البيانات الشخصية رقم ١٥١ لسنة ٢٠٢٠. وبيانات التواصل (إن تركتها) تُحفظ بشكل منفصل عن
+          إجاباتك، ولا نستخدمها إلا بموافقتك الصريحة. لن نسألك عن أي بيانات خاصة بالمرضى، ولا عن دخل العيادة.</span>
+      </div>
+      <div class="iv iv-guide">
+        <b>لمن يُجري المقابلة</b>
+        <ul>
+          <li>هدفنا الاستماع لا البيع. اترك الطبيب يتحدث، ولا تقاطعه.</li>
+          <li>إذا سأل عن السعر أو موعد الإطلاق: «لم نحدد بعد، ورأي حضرتك سيساعدنا في تحديده». لا تذكر أي رقم أو تاريخ.
+          </li>
+          <li>إذا سأل عن ميزة ما زالت فكرة، وضّح بصراحة أنها قيد الدراسة، وأن رأيه سيؤثر في قرار تنفيذها.</li>
+          <li>لا تكتب أي اسم مريض أو أي معلومة عن حالة، حتى لو ذكرها الطبيب.</li>
+          <li>الصناديق البنفسجية أسئلة إضافية للمقابلة فقط، ولا تظهر لمن يملأ الاستبيان بنفسه.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card how" aria-label="طريقة التقييم">
+      <p class="how-title">في أسئلة التقييم، اختر رقمًا من ١ إلى ٥:</p>
+      <div class="how-strip" id="howStrip"></div>
+      <div class="how-arrow"><span>١ = غير مفيدة إطلاقًا</span><span>٥ = ضرورية ولا غنى عنها</span></div>
+    </section>
+
+    <form id="survey" autocomplete="off" onsubmit="return false"></form>
+
+    <section class="card submit-wrap" id="submitWrap">
+      <button class="submit-btn" id="submitBtn" type="button">إرسال الاستبيان</button>
+      <p class="submit-status" id="submitStatus"></p>
+    </section>
+
+    <section class="card thanks" id="thanksBox" hidden>
+      <h2>شكرًا جزيلًا يا دكتور 🌿</h2>
+      <p>رأي حضرتك سيُحدث فرقًا حقيقيًا فيما نبنيه.</p>
+    </section>
+
+    <p class="draft">مسودة ثالثة — للمراجعة الداخلية</p>
+  </main>
+
+  <script>
+    const LEVELS = ["غير مفيدة", "قليلة الفائدة", "متوسطة", "مفيدة", "ضرورية"];
+    const TINT = [0.03, 0.08, 0.14, 0.21, 0.3];
+    const PICK5 = "يمكن اختيار حتى ٥ إجابات";
+
+    const SECTIONS = [
+      {
+        title: "طبيعة عملك الحالية",
+        questions: [
+          {
+            id: "specialty", type: "single", cols: true, text: "ما تخصص حضرتك؟",
+            options: ["باطنة", "أطفال", "نسا وتوليد", "عظام", "جلدية", "أسنان", "عيون", "أنف وأذن وحنجرة", "قلب", "مخ وأعصاب", "نفسية"],
+            other: "تخصص آخر"
+          },
+          {
+            id: "clinic", type: "single", text: "كيف تعمل العيادة حاليًا؟",
+            options: ["أعمل بمفردي دون مساعد", "معي مساعد أو موظف استقبال", "معي أكثر من مساعد أو موظف", "عيادة تضم أكثر من طبيب", "لديّ أكثر من عيادة أو فرع"]
+          },
+          {
+            id: "perday", type: "single", cols: true, text: "كم حالة تكشف عليها تقريبًا في اليوم العادي؟",
+            options: ["أقل من ١٠", "من ١٠ إلى ٢٠", "من ٢٠ إلى ٤٠", "من ٤٠ إلى ٦٠", "أكثر من ٦٠"]
+          },
+          {
+            id: "booking", type: "multi", text: "كيف يتم الحجز في العيادة حاليًا؟", hint: "يمكن اختيار أكثر من إجابة",
+            options: ["بالدور حسب الحضور", "بالتليفون، والمساعد يسجّل في دفتر", "عن طريق الواتساب", "تطبيق حجز (مثل فيزيتا أو غيره)", "برنامج على كمبيوتر العيادة"],
+            other: "طريقة أخرى"
+          },
+          {
+            id: "pains", type: "multi", max: 5, text: "ما أكثر الأمور التي تعطّل عملك اليومي أو تسبب لك إزعاجًا؟", hint: PICK5,
+            options: ["حجوزات لا يحضر أصحابها", "الزحام وطول الانتظار في العيادة", "كثرة المكالمات للحجز والاستفسار", "حضور المريض دون تحاليله أو أشعته السابقة", "متابعة نتائج التحاليل والأشعة المطلوبة", "عدم توفر الدواء المكتوب في الصيدليات", "الحسابات وتسليم النقدية آخر اليوم", "كتابة الروشتات وتنظيم ملف كل مريض"],
+            other: "أمر آخر",
+            interview: "«هل تتذكر آخر مرة حدث فيها ذلك؟ وكيف تصرفت حضرتك؟»"
+          },
+          { id: "apps", type: "open", text: "هل تستخدم أي تطبيق أو برنامج في العيادة؟", hint: "اذكر اسمه، وما يعجبك فيه، وما لا يعجبك" },
+        ],
+      },
+      {
+        title: "مزايا جاهزة في المنصة", tag: ["now", "جاهزة"],
+        lead: "هذه المزايا تم بناؤها بالفعل، وستكون متاحة عند إطلاق المنصة. والمزايا المميزة بعلامة «تعمل عند الإطلاق» في مرحلة التجهيز الأخيرة. ورأي حضرتك يساعدنا في ترتيب الأولويات.",
+        questions: [
+          {
+            id: "existing", type: "matrix", text: "ما مدى فائدة كل ميزة منها في عملك؟",
+            rows: [
+              "حجز المرضى أونلاين في مواعيد العيادة التي تحددها، مع عرض سعر الكشف والإعادة",
+              "روشتة إلكترونية واضحة يرسلها المريض لأي صيدلية يختارها، مع قوالب جاهزة للروشتات المتكررة",
+              "طلب التحاليل والأشعة من العيادة، ووصول النتيجة إلى ملف المريض فور صدورها",
+              "ملف طبي لكل مريض يضم زياراته وتحاليله وأدويته وحساسيته، ويُفتح لحضرتك بموافقة المريض",
+              "حساب لسكرتارية العيادة بصلاحيات محددة (الحجز والمواعيد والحسابات)، دون الاطلاع على التاريخ الطبي للمريض",
+              "حسابات العيادة، وتسليم النقدية في نهاية كل وردية مع بيان أي فرق",
+              "ترشيح معمل أو صيدلية أو مستشفى تثق فيه للمريض، مع حرية المريض في اختيار غيره",
+              "تنبيه في الروشتة إذا تعارض دواء مع حساسية المريض، ومساعد لحساب جرعات الأطفال بالوزن",
+              "صفحة عامة باسمك تظهر في البحث وفي جوجل، وشارة «موثّق» بعد مراجعة ترخيصك، و«أقرب موعد متاح» على كارتك",
+              { text: "رسالة تذكير للمريض قبل موعده على الواتساب أو برسالة نصية", ready: true },
+            ],
+            interview: "«أيٌّ منها لو رأيته يعمل أمامك سيشجعك على تجربة المنصة؟»"
+          },
+        ],
+      },
+      {
+        title: "أفكار نفكر فيها", tag: ["idea", "فكرة"],
+        lead: "هذه الأفكار غير متاحة بعد، وما زلنا ندرس تنفيذها. ورأي حضرتك سيساعدنا في اتخاذ القرار.",
+        questions: [
+          {
+            id: "ideas", type: "matrix", text: "إذا تم تنفيذها، ما مدى فائدتها في عملك؟",
+            rows: [
+              "إغلاق يوم أو تحديد إجازة بتاريخ معيّن، مع إبلاغ المرضى الحاجزين لاختيار موعد آخر",
+              "استشارة بالفيديو أو مكالمة صوتية، بمواعيد ضمن جدول العيادة نفسه",
+              "التواصل بالرسائل مع المريض بعد الكشف للمتابعة، في الأوقات التي تحددها",
+              "دفع عربون عند الحجز يُخصم من قيمة الكشف عند الحضور، مع سياسة واضحة في حالة الغياب",
+              "اختيار كارت التأمين عند الحجز، لتعرف شركة التأمين التابع لها المريض قبل حضوره",
+              "عرض شركات التأمين المتعاقد معها في صفحة حضرتك، ليعرفها المريض قبل الحجز",
+              "تأكيد الحضور أو الإلغاء بضغطة واحدة من رسالة التذكير",
+              "قوالب جاهزة لملاحظات الكشف حسب نوع الحالة",
+              "زيارة منزلية للطبيب يحجزها المريض من المنصة",
+              "توضيح نظام العيادة في نتائج البحث: «بالدور» أو «بموعد»",
+              "علامة «لا يُستبدل» بجانب الدواء في الروشتة، لتمنع الصيدلي من صرف بديل له",
+              "ظهور حضرتك للمرضى القريبين منك بالبحث بالموقع",
+            ]
+          },
+          {
+            id: "multidoc", type: "single", text: "إذا كانت العيادة تضم أكثر من طبيب، أو كان لديك مستوصف صغير، فما الأنسب لكم؟",
+            hint: "إذا كانت عيادتك بها طبيب واحد فقط، اختر الإجابة الأخيرة",
+            options: ["حساب واحد للعيادة، بمواعيد مستقلة لكل طبيب وحسابات مالية مشتركة", "حساب للعيادة، ولكل طبيب حساب منفصل، لأن بعضنا يعمل في أماكن أخرى", "حساب منفصل لكل طبيب أفضل", "لا يفرق معي", "عيادتي بها طبيب واحد فقط"]
+          },
+        ],
+      },
+      {
+        title: "ملف الحمل", tag: ["idea", "فكرة"], theme: "rose", label: "لأطباء النسا والتوليد",
+        showIf: ["specialty", "نسا وتوليد"],
+        leadBox: "متابعة الحمل مرحلة تحتاج إلى اهتمام خاص، ونريد أن نصمم هذا الملف مع أطباء التخصص أنفسهم. «ملف الحمل» فكرة قيد الدراسة: تتابع فيه السيدة حملها، ويظل متاحًا لطبيبها طوال مدة الحمل، ولها الحق في إغلاقه في أي وقت.",
+        questions: [
+          { id: "preg_importance", type: "scale", text: "بشكل عام، ما مدى فائدة «ملف الحمل» في عملك؟" },
+          {
+            id: "preg_count", type: "single", cols: true, text: "كم سيدة حامل تتابع معها حضرتك تقريبًا في الشهر؟",
+            options: ["أقل من ١٠", "من ١٠ إلى ٣٠", "من ٣٠ إلى ٦٠", "أكثر من ٦٠"]
+          },
+          {
+            id: "preg_parts", type: "matrix", text: "ما مدى فائدة كل جزء من هذه الأجزاء في الملف؟",
+            rows: [
+              "سجل الزيارات ومواعيد المتابعة القادمة حسب أسبوع الحمل",
+              "تذكير السيدة بمواعيد التحاليل والسونار التي تحددها حضرتك",
+              "تسجيل السيدة للوزن والضغط والسكر من المنزل، وظهورها لحضرتك في رسم بياني",
+              "تنبيه لحضرتك إذا سجّلت السيدة قراءة خارج الحدود التي تحددها",
+              "تقارير السونار والتحاليل كلها في مكان واحد أمامك في كل زيارة",
+              "معلومات توعوية لكل مرحلة من الحمل، يراجعها أطباء متخصصون",
+              "التواصل بالرسائل للأسئلة البسيطة، في الأوقات التي تحددها",
+              "خطة الولادة واختيار المستشفى، وإرسال الملف للمستشفى قبل الولادة",
+              "متابعة ما بعد الولادة (النفاس والرضاعة)، وبداية ملف المولود",
+            ]
+          },
+          {
+            id: "preg_content", type: "single", text: "من الأنسب أن يحدد محتوى النصائح والمعلومات التوعوية في الملف؟",
+            options: ["الطبيب المعالج يكتبها أو يختارها لكل سيدة", "محتوى جاهز من المنصة يراجعه أطباء نسا وتوليد", "الاثنان معًا: محتوى جاهز، ويضيف الطبيب ما يراه", "أفضّل ألا تقدم المنصة نصائح"]
+          },
+          {
+            id: "preg_duration", type: "single", text: "إلى متى ترى أن يظل الملف متاحًا لحضرتك؟", hint: "مع حق السيدة في إغلاقه في أي وقت",
+            options: ["طوال مدة الحمل فقط", "طوال الحمل وحتى نهاية فترة النفاس", "حتى تقرر السيدة إغلاقه", "غير متأكد"]
+          },
+          {
+            id: "preg_alert", type: "single", text: "إذا سجّلت السيدة عرضًا مقلقًا في الملف، فما التصرف الأنسب من المنصة؟",
+            hint: "الأعراض نفسها ستُحدَّد بمراجعة أطباء متخصصين",
+            options: ["توجيهها فورًا للتواصل مع طبيبها أو أقرب طوارئ", "توجيهها للتواصل، مع إرسال تنبيه لحضرتك أيضًا", "لا أفضّل وجود هذه الخاصية", "غير متأكد"]
+          },
+          { id: "preg_concern", type: "open", optional: true, text: "ما الذي يجب ألا يتضمنه هذا الملف، أو ما الذي يقلقك فيه؟", hint: "اختياري" },
+        ],
+      },
+      {
+        title: "الاشتراك والأسعار",
+        lead: "ستتضمن المنصة باقة مجانية، وباقات مدفوعة بمزايا إضافية. لم نحدد الأسعار بعد، ورأي حضرتك سيساعدنا في تحديدها.",
+        questions: [
+          {
+            id: "price", type: "single", text: "إذا وفّرت لك المنصة وقتًا فعليًا أو جلبت لك حالات جديدة، فما المبلغ الشهري المناسب في رأيك؟",
+            options: ["لن أدفع، سأكتفي بالباقة المجانية", "أقل من ٢٠٠ جنيه", "من ٢٠٠ إلى ٥٠٠ جنيه", "من ٥٠٠ إلى ١٠٠٠ جنيه", "أكثر من ١٠٠٠ جنيه إذا كانت الفائدة تستحق"]
+          },
+          {
+            id: "paymodel", type: "single", text: "ما طريقة الدفع التي تفضلها؟",
+            options: ["اشتراك شهري ثابت", "اشتراك سنوي بخصم", "مبلغ بسيط عن كل حجز يأتي من المنصة، دون اشتراك", "غير متأكد"]
+          },
+          {
+            id: "join", type: "multi", max: 5, text: "ما الذي قد يشجعك على الاشتراك في باقة مدفوعة؟", hint: PICK5,
+            options: ["حالات جديدة تأتي من المنصة", "تقليل الغياب", "وقت أقل في المكالمات والحجز", "ملف المريض ونتائجه كاملة أمامي", "تنظيم حسابات العيادة", "استخدام زملائي لها", "تجربة مجانية في البداية"],
+            other: "سبب آخر"
+          },
+          {
+            id: "leave", type: "multi", max: 5, text: "ما الذي قد يمنعك من الاشتراك في المنصة أو الاستمرار فيها؟", hint: PICK5,
+            options: ["سعر مرتفع مقارنة بما يقدمه", "صعوبة الاستخدام أو استهلاك الوقت", "عدم جلب حالات جديدة", "ضعف الدعم الفني أو تأخر الرد", "القلق على خصوصية بيانات المرضى", "التقييمات والتعليقات السلبية"],
+            other: "سبب آخر"
+          },
+        ],
+      },
+      {
+        title: "كلمة أخيرة",
+        questions: [
+          { id: "wish", type: "open", text: "لو أمكنك طلب ميزة واحدة فقط من المنصة، فما هي؟" },
+          { id: "extra", type: "open", optional: true, text: "هل هناك ما تود إضافته، أو أمر مهم لم نسأل عنه؟", hint: "اختياري" },
+          {
+            id: "nps", type: "single", optional: true, text: "إذا أمكنك تقييم تجربتك مع هذا الاستبيان من ١ (لن أوصي أبدًا) إلى ٥ (سأوصي بشدة)، فما تقييمك؟", hint: "اختياري",
+            options: ["١", "٢", "٣", "٤", "٥"]
+          },
+        ],
+      },
+      {
+        title: "كن شريكًا معنا",
+        questions: [
+          {
+            id: "partner", type: "single", text: "هل تحب أن تشاركنا في بناء المنصة؟",
+            options: ["نعم، أرغب في تجربتها قبل إطلاقها وإبداء رأيي", "أبلغوني عند إطلاقها", "ليس الآن، شكرًا"]
+          },
+          {
+            id: "contact", type: "fields", optional: true, text: "إذا رغبت في أن نتواصل معك، أو في الحصول على كود الشهر المجاني:", hint: "اختياري",
+            fields: ["الاسم", "رقم الموبايل أو الواتساب", "المحافظة والمنطقة"],
+            note: "سيُستخدم رقمك للتواصل معك بخصوص المنصة فقط، ولن يُشارك مع أي جهة، ولن تصلك منه رسائل إعلانية."
+          },
+          {
+            id: "consent", type: "multi", optional: true, text: "موافقة على التواصل وحفظ البيانات", hint: "اختياري، ولا يؤثر على قبول إجاباتك",
+            options: ["أوافق على أن يتواصل معي فريق «صحة وعافية» بخصوص المنصة فقط، وعلى حفظ بيانات التواصل لهذا الغرض وفق قانون حماية البيانات الشخصية رقم ١٥١ لسنة ٢٠٢٠، ولي الحق في طلب حذفها في أي وقت"]
+          },
+        ],
+      },
+    ];
+
+    const ORD = ["الأول", "الثاني", "الثالث", "الرابع", "الخامس", "السادس", "السابع", "الثامن"];
+    const AR = (n) => String(n).replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+    const el = (tag, attrs = {}, ...kids) => {
+      const e = document.createElement(tag);
+      for (const [k, v] of Object.entries(attrs)) {
+        if (k === "class") e.className = v; else if (k === "text") e.textContent = v; else e.setAttribute(k, v);
+      }
+      for (const k of kids) if (k) e.append(k);
+      return e;
+    };
+
+    // Legend strip at the top
+    const strip = document.getElementById("howStrip");
+    LEVELS.forEach((w, i) => {
+      const d = el("div", {}, el("b", { text: AR(i + 1) }), el("span", { text: w }));
+      d.style.background = `rgba(var(--brand-rgb), ${TINT[i] + 0.04})`;
+      strip.append(d);
+    });
+
+    const form = document.getElementById("survey");
+
+    function option(type, name, value) {
+      return el("label", { class: "opt" }, el("input", { type, name, value }), el("span", { text: value }));
+    }
+    function scale(name) {
+      const s = el("div", { class: "scale", role: "radiogroup" });
+      LEVELS.forEach((w, i) => {
+        const span = el("span", {}, el("b", { text: AR(i + 1) }), el("small", { text: w }));
+        span.style.setProperty("--t", TINT[i]);
+        s.append(el("label", {}, el("input", { type: "radio", name, value: i + 1, "aria-label": AR(i + 1) + " — " + w }), span));
+      });
+      return s;
+    }
+
+    let secIndex = 0;
+    SECTIONS.forEach((sec) => {
+      const box = el("div", { class: "sec" + (sec.theme ? " " + sec.theme : "") + (sec.showIf ? " cond" : "") });
+      if (sec.showIf) { box.dataset.ifQ = sec.showIf[0]; box.dataset.ifV = sec.showIf[1]; }
+      const head = el("div", { class: "sec-head" },
+        el("span", { class: "sec-num", text: sec.label || "الجزء " + ORD[secIndex++] }));
+      const h2 = el("h2", { text: sec.title });
+      if (sec.tag) h2.append(el("span", { class: "tag " + sec.tag[0], text: sec.tag[1] }));
+      head.append(h2);
+      box.append(head);
+      if (sec.lead) box.append(el("p", { class: "sec-lead", text: sec.lead }));
+      if (sec.leadBox) box.append(el("div", { class: "sec-lead-box", text: sec.leadBox }));
+
+      for (const q of sec.questions) {
+        const card = el("section", { class: "card q", id: "q-" + q.id });
+        if (q.optional) card.dataset.optional = "1";
+        card.append(el("p", { class: "q-title" }, el("span", { class: "q-n" }), el("span", { text: q.text })));
+        if (q.desc) card.append(el("p", { class: "q-desc", text: q.desc }));
+        if (q.hint) card.append(el("p", { class: "q-hint", text: q.hint }));
+
+        const body = el("div", { class: "q-body" });
+        if (q.type === "single" || q.type === "multi") {
+          const type = q.type === "single" ? "radio" : "checkbox";
+          const opts = el("div", { class: "opts" + (q.cols ? " cols" : "") });
+          q.options.forEach((o) => opts.append(option(type, q.id, o)));
+          if (q.other) opts.append(option(type, q.id, q.other));
+          body.append(opts);
+          if (q.other) body.append(el("input", { type: "text", class: "other-in", placeholder: "اكتب هنا…", "aria-label": q.other, hidden: "" }));
+          if (q.max) { card.dataset.max = q.max; body.append(el("p", { class: "count" })); }
+        } else if (q.type === "matrix") {
+          const rows = el("div", { class: "rows" });
+          q.rows.forEach((r, i) => {
+            const p = el("p", { class: "row-text", text: typeof r === "string" ? r : r.text });
+            if (r.ready) p.append(el("span", { class: "tag ready", text: "تعمل عند الإطلاق" }));
+            rows.append(el("div", { class: "row" }, p, scale(q.id + "-" + i)));
+          });
+          body.append(rows);
+        } else if (q.type === "scale") {
+          body.append(scale(q.id));
+        } else if (q.type === "open") {
+          body.append(el("textarea", { name: q.id, placeholder: "اكتب هنا…", "aria-label": q.text }));
+        } else if (q.type === "fields") {
+          q.fields.forEach((f, i) => body.append(el("div", { class: "field" }, el("label", { for: q.id + i, text: f }), el("input", { type: "text", id: q.id + i, name: q.id + i }))));
+        }
+        if (q.note) body.append(el("p", { class: "note-line", text: "🔒 " + q.note }));
+        card.append(body);
+        if (q.interview) card.append(el("div", { class: "iv" }, el("b", { text: "سؤال إضافي للمقابلة" }), el("span", { text: q.interview })));
+        box.append(card);
+      }
+      form.append(box);
+    });
+
+    function answered(card) {
+      const rows = card.querySelectorAll(".row");
+      if (rows.length) {
+        let all = true;
+        rows.forEach((r) => { const ok = !!r.querySelector("input:checked"); r.classList.toggle("done", ok); if (!ok) all = false; });
+        return all;
+      }
+      if (card.querySelector("input:checked")) return true;
+      return [...card.querySelectorAll("textarea, input[type=text]")].some((t) => t.value.trim());
+    }
+    const shown = (c) => { const k = c.closest(".cond"); return !k || k.classList.contains("show"); };
+
+    function update() {
+      document.querySelectorAll(".sec.cond").forEach((s) => {
+        const v = form.querySelector(`input[name="${s.dataset.ifQ}"]:checked`)?.value;
+        s.classList.toggle("show", v === s.dataset.ifV);
+      });
+      document.querySelectorAll(".q").forEach((c) => {
+        const other = c.querySelector(".other-in");
+        if (other) { const opts = c.querySelectorAll(".opt input"); other.hidden = !opts[opts.length - 1].checked; }
+        const max = +c.dataset.max;
+        if (max) {
+          const boxes = [...c.querySelectorAll(".opt input")];
+          const n = boxes.filter((b) => b.checked).length;
+          boxes.forEach((b) => { b.disabled = n >= max && !b.checked; b.parentElement.classList.toggle("disabled", b.disabled); });
+          c.querySelector(".count").textContent = `اخترت ${AR(n)} من ${AR(max)}`;
+        }
+      });
+      const visible = [...document.querySelectorAll(".q")].filter(shown);
+      visible.forEach((c, i) => { c.querySelector(".q-n").textContent = AR(i + 1); });
+      const counted = visible.filter((c) => !c.dataset.optional);
+      let done = 0;
+      visible.forEach((c) => { const ok = answered(c); c.classList.toggle("done", ok); if (ok && !c.dataset.optional) done++; });
+      const pct = Math.round((done / counted.length) * 100);
+      document.getElementById("pbar").style.width = pct + "%";
+      document.getElementById("pct").textContent = AR(pct) + "٪";
+    }
+    form.addEventListener("input", update);
+    form.addEventListener("change", update);
+    update();
+
+    const ivBtn = document.getElementById("ivBtn");
+    ivBtn.addEventListener("click", () => ivBtn.setAttribute("aria-pressed", document.body.classList.toggle("interview")));
+    document.getElementById("printBtn").addEventListener("click", () => window.print());
+  </script>
+  <script src="survey-handler.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,7 @@
+استبيان-التمريض-المنزلي.html: من ٦ إلى ٧ دقائق | ١٨ سؤالًا | js:ok | consent:true | oldWording:false
+استبيان-الدكاترة.html: من ٦ إلى ٧ دقائق | ١٩ سؤالًا | js:ok | consent:true | oldWording:false
+استبيان-الصيدليات.html: من ٧ إلى ٨ دقائق | ٢١ سؤالًا | js:ok | consent:true | oldWording:false
+استبيان-المستخدمين.html: حوالي ٥ دقائق | ١٥ سؤالًا | js:ok | consent:true | oldWording:false
+استبيان-المستشفيات.html: من ٦ إلى ٧ دقائق | ١٨ سؤالًا | js:ok | consent:true | oldWording:false
+استبيان-المعامل.html: من ٦ إلى ٧ دقائق | ١٨ سؤالًا | js:ok | consent:true | oldWording:false
+استبيان-مراكز-الأشعة.html: من ٦ إلى ٧ دقائق | ١٨ سؤالًا | js:ok | consent:true | oldWording:false
