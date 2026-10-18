@@ -72,6 +72,66 @@
       background: var(--rose-soft);
     }
 
+    .login-wrap {
+      max-width: 420px;
+      margin: 10vh auto 0;
+      padding: 0 20px;
+    }
+
+    .login-box {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .login-box h1 {
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+
+    .login-box p {
+      font-size: 14px;
+      color: var(--muted);
+      margin: 0 0 16px;
+    }
+
+    .login-box label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      margin: 12px 0 4px;
+    }
+
+    .login-box input {
+      width: 100%;
+      box-sizing: border-box;
+      font: inherit;
+      padding: 10px 12px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: var(--bg, var(--card));
+      color: var(--text);
+    }
+
+    .login-box .btn {
+      width: 100%;
+      justify-content: center;
+      margin-top: 16px;
+    }
+
+    .login-msg {
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--rose);
+    }
+
+    .login-box details {
+      margin-top: 16px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
     .webhook-card {
       background: var(--card);
       border: 1px solid var(--line);
@@ -614,7 +674,25 @@
 
 <body>
 
-  <header class="dash-wrap">
+  <!-- شاشة الدخول: مفيش أي بيانات في الصفحة قبل الدخول -->
+  <div class="login-wrap" id="loginScreen">
+    <form class="login-box" id="loginForm" autocomplete="on">
+      <h1>لوحة الردود — دخول</h1>
+      <p>اكتب اليوزر والباس اللي اتحطوا في إعدادات سكريبت الجدول.</p>
+      <label for="loginUser">اليوزر</label>
+      <input type="text" id="loginUser" name="username" autocomplete="username" required>
+      <label for="loginPass">الباس</label>
+      <input type="password" id="loginPass" name="password" autocomplete="current-password" required>
+      <button class="btn primary" id="loginBtn" type="submit">دخول</button>
+      <div class="login-msg" id="loginMsg" role="alert"></div>
+      <details>
+        <summary>رابط الجدول</summary>
+        <input type="text" id="webhookInput" dir="ltr" placeholder="https://script.google.com/.../exec" style="margin-top:8px;">
+      </details>
+    </form>
+  </div>
+
+  <header class="dash-wrap" id="app" hidden>
     <div class="dash-nav">
       <div class="brand">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -626,37 +704,14 @@
       <div class="nav-links">
         <button class="btn" id="themeToggle" type="button">🌓 المظهر</button>
         <button class="btn" id="sampleDataBtn" type="button">➕ توليد ردود تجريبية للاختبار</button>
+        <button class="btn" id="refreshBtn" type="button">🔄 تحديث</button>
+        <button class="btn danger" id="logoutBtn" type="button">خروج</button>
       </div>
     </div>
 
-    <!-- Webhook Integration Card -->
-    <section class="webhook-card">
-      <div class="webhook-header">
-        <h2>
-          <span>ربط Google Sheets السحابي</span>
-          <span class="status-badge" id="webhookStatusBadge">
-            <i></i> <span id="webhookStatusText">محفوظ محلياً فقط</span>
-          </span>
-        </h2>
-        <button class="btn" id="toggleHelpBtn" type="button">📖 كود Google Apps Script وطريقة الربط</button>
-      </div>
-
-      <div class="webhook-input-group">
-        <input type="text" id="webhookInput" placeholder="الصق رابط Google Apps Script Webhook (https://script.google.com/.../exec)">
-        <button class="btn primary" id="saveWebhookBtn" type="button">حفظ واختبار الربط</button>
-        <button class="btn" id="clearWebhookBtn" type="button">إلغاء الربط</button>
-      </div>
-
-      <div class="help-box" id="helpBox" hidden>
-        <b>طريقة الربط في دقيقتين مع Google Sheets:</b>
-        <ol>
-          <li>افتح ملف [google-sheets-script.js](google-sheets-script.js) وانسخ الكود بالكامل.</li>
-          <li>في شيت جديد على Google Drive، اختر من القائمة: <b>ملحقات (Extensions) &gt; Apps Script</b> والصق الكود.</li>
-          <li>اضغط <b>Deploy (نشر) &gt; New deployment &gt; نوع Web app &gt; Who has access: Anyone</b>.</li>
-          <li>انسخ الرابط الناتج والصقه في الخانة أعلاه واضغط حفظ. سيتم تحويل أي رد تلقائيًا لجدول Google Sheets!</li>
-        </ol>
-      </div>
-    </section>
+    <p id="localNotice" style="margin:0 0 14px; padding:10px 14px; border:1px solid var(--line); border-radius:10px; background:var(--card); font-size:14px;">
+      الردود الحقيقية بتتقرا من جدول جوجل بعد الدخول. الردود التجريبية (لو وُلّدت) محفوظة على الجهاز ده بس وعليها علامة «تجريبي».
+    </p>
 
     <!-- Top KPI Stats -->
     <div class="stats-grid">
@@ -701,11 +756,16 @@
         <button class="filter-chip" data-type="المستخدمين">المستخدمين</button>
       </div>
 
+      <div class="filters-scroll" id="scopeList">
+        <button class="filter-chip active" data-scope="real">الحقيقي</button>
+        <button class="filter-chip" data-scope="demo">تجريبي</button>
+        <button class="btn danger" id="clearDemoBtn" type="button" hidden>حذف التجريبي</button>
+      </div>
+
       <div style="display: flex; gap: 8px; flex-wrap: wrap;">
         <input type="text" id="searchInput" placeholder="بحث بالاسم أو الهاتف أو نص الإجابة…" style="width: 220px; padding: 6px 12px; font-size: 14px;">
         <button class="btn" id="exportCsvBtn" type="button">📥 تصدير Excel</button>
         <button class="btn" id="exportJsonBtn" type="button">JSON</button>
-        <button class="btn danger" id="clearAllBtn" type="button">مسح السجل</button>
       </div>
     </div>
 
@@ -860,15 +920,6 @@
     const responsesView = document.getElementById("responsesView");
     const responsesCountBadge = document.getElementById("responsesCountBadge");
 
-    // Webhook Elements
-    const webhookInput = document.getElementById("webhookInput");
-    const saveWebhookBtn = document.getElementById("saveWebhookBtn");
-    const clearWebhookBtn = document.getElementById("clearWebhookBtn");
-    const webhookStatusBadge = document.getElementById("webhookStatusBadge");
-    const webhookStatusText = document.getElementById("webhookStatusText");
-    const helpBox = document.getElementById("helpBox");
-    const toggleHelpBtn = document.getElementById("toggleHelpBtn");
-
     // Stats Elements
     const statTotal = document.getElementById("statTotal");
     const statContacts = document.getElementById("statContacts");
@@ -924,55 +975,6 @@
     tabAnalyticsBtn.addEventListener("click", () => setView("analytics"));
     tabResponsesBtn.addEventListener("click", () => setView("responses"));
 
-    // Webhook management
-    function updateWebhookUI() {
-      const url = localStorage.getItem("SURVEY_WEBHOOK_URL") || "";
-      webhookInput.value = url;
-      if (url && url.startsWith("http")) {
-        webhookStatusBadge.classList.add("connected");
-        webhookStatusText.textContent = "متصل سحابيًا بـ Google Sheets";
-      } else {
-        webhookStatusBadge.classList.remove("connected");
-        webhookStatusText.textContent = "تخزين محلي فقط (بدون Webhook)";
-      }
-    }
-
-    saveWebhookBtn.addEventListener("click", async () => {
-      const url = webhookInput.value.trim();
-      if (!url) {
-        alert("يرجى إدخال رابط Webhook صالح.");
-        return;
-      }
-      localStorage.setItem("SURVEY_WEBHOOK_URL", url);
-      updateWebhookUI();
-      saveWebhookBtn.textContent = "جاري الاختبار…";
-      try {
-        await fetch(url, {
-          method: "POST",
-          mode: "no-cors",
-          cache: "no-cache",
-          headers: { "Content-Type": "text/plain;charset=utf-8" },
-          body: JSON.stringify({ test: true, ping: "ping from survey dashboard", date: new Date().toISOString() })
-        });
-        alert("تم حفظ الرابط واختباره بنجاح!");
-      } catch (err) {
-        alert("تم حفظ الرابط بنجاح.");
-      } finally {
-        saveWebhookBtn.textContent = "حفظ واختبار الربط";
-      }
-    });
-
-    clearWebhookBtn.addEventListener("click", () => {
-      if (confirm("هل ترغب في إلغاء رابط الـ Webhook؟ ستظل الردود تُحفظ محليًا.")) {
-        localStorage.removeItem("SURVEY_WEBHOOK_URL");
-        updateWebhookUI();
-      }
-    });
-
-    toggleHelpBtn.addEventListener("click", () => {
-      helpBox.hidden = !helpBox.hidden;
-    });
-
     // Theme toggle
     document.getElementById("themeToggle").addEventListener("click", () => {
       const cur = document.documentElement.getAttribute("data-theme");
@@ -984,17 +986,29 @@
       document.documentElement.setAttribute("data-theme", localStorage.getItem("SURVEY_THEME"));
     }
 
-    function getSubmissions() {
+    // الردود الحقيقية بتتقرا من الجدول وبتتحفظ في الذاكرة بس. التجريبي لوحده في تخزين المتصفح.
+    let remoteRows = [];
+    const DEMO_KEY = "SURVEY_DEMO";
+    function getDemo() {
       try {
-        return JSON.parse(localStorage.getItem("SURVEY_SUBMISSIONS") || "[]");
+        return JSON.parse(localStorage.getItem(DEMO_KEY) || "[]");
       } catch {
         return [];
       }
     }
+    function getSubmissions() {
+      return [...remoteRows, ...getDemo()];
+    }
 
     // MAIN RENDER FUNCTION
+    let currentScope = "real"; // 'real' or 'demo'
+    const inScope = (s) => !!s.demo === (currentScope === "demo");
+    const DEMO_TAG = '<span style="font-size:11px; padding:1px 8px; border-radius:99px; background:#f59e0b; color:#fff; margin-inline-start:6px;">تجريبي</span>';
+
     function render() {
-      const all = getSubmissions();
+      const everything = getSubmissions();
+      const all = everything.filter(inScope);
+      document.getElementById("clearDemoBtn").hidden = !everything.some(s => s.demo);
 
       // Top counters
       statTotal.textContent = AR(all.length);
@@ -1046,7 +1060,7 @@
           const ansCount = (sub.answers || []).filter(a => a.answer !== null).length;
           tr.innerHTML = `
             <td><b>${AR(i + 1)}</b></td>
-            <td><span class="tag now">${sub.surveyTitle || "استبيان"}</span></td>
+            <td><span class="tag now">${sub.surveyTitle || "استبيان"}</span>${sub.demo ? DEMO_TAG : ""}</td>
             <td><small style="color:var(--muted);">${sub.submittedAt || sub.timestamp || "—"}</small></td>
             <td><b>${sub.contact?.name || "—"}</b></td>
             <td dir="ltr" style="text-align:right;">${sub.contact?.phone || "—"}</td>
@@ -1401,6 +1415,7 @@
 
         newSamples.push({
           id: "sub_" + (Date.now() + i) + "_" + Math.random().toString(36).substring(2, 6),
+          demo: true,
           surveyTitle: "استبيان الأطباء",
           submittedAt: new Date(Date.now() - i * 3600000).toLocaleString("ar-EG"),
           timestamp: new Date().toISOString(),
@@ -1427,22 +1442,31 @@
         });
       }
 
-      const list = getSubmissions();
-      localStorage.setItem("SURVEY_SUBMISSIONS", JSON.stringify([...newSamples, ...list]));
+      localStorage.setItem(DEMO_KEY, JSON.stringify([...newSamples, ...getDemo()]));
+      currentScope = "demo";
+      syncScopeChips();
       render();
     });
 
-    // Clear all
-    document.getElementById("clearAllBtn").addEventListener("click", () => {
-      if (confirm("هل أنت متأكد من مسح جميع الردود المسجلة محليًا؟ لن يتم مسح أي بيانات تم إرسالها لـ Google Sheets.")) {
-        localStorage.removeItem("SURVEY_SUBMISSIONS");
+    // Real vs demo scope
+    function syncScopeChips() {
+      document.querySelectorAll("#scopeList .filter-chip").forEach(c => c.classList.toggle("active", c.dataset.scope === currentScope));
+    }
+    document.querySelectorAll("#scopeList .filter-chip").forEach(chip => {
+      chip.addEventListener("click", () => { currentScope = chip.dataset.scope; syncScopeChips(); render(); });
+    });
+    document.getElementById("clearDemoBtn").addEventListener("click", () => {
+      if (confirm("هل تريد حذف الردود التجريبية فقط؟ الردود الحقيقية لن تتأثر.")) {
+        localStorage.removeItem(DEMO_KEY);
+        currentScope = "real";
+        syncScopeChips();
         render();
       }
     });
 
     // Export CSV
     document.getElementById("exportCsvBtn").addEventListener("click", () => {
-      const all = getSubmissions();
+      const all = getSubmissions().filter(inScope);
       if (all.length === 0) {
         alert("لا توجد بيانات لتصديرها.");
         return;
@@ -1468,7 +1492,7 @@
 
     // Export JSON
     document.getElementById("exportJsonBtn").addEventListener("click", () => {
-      const all = getSubmissions();
+      const all = getSubmissions().filter(inScope);
       const blob = new Blob([JSON.stringify(all, null, 2)], { type: "application/json" });
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
@@ -1476,14 +1500,126 @@
       a.click();
     });
 
-    // Initialize
-    updateWebhookUI();
-    render();
+    // ===== الدخول والقراية من سكريبت الجدول =====
+    const DEFAULT_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbyT6ppK5VINcGdvy-vj5gQHTZ3DKB3CtPAKetH09FNWWi5YRDNHBT3XMkxHQelQ7JbE/exec";
+    const TOKEN_KEY = "SURVEY_DASH_TOKEN"; // sessionStorage: يتمسح لما التبويب يتقفل
+    const loginScreen = document.getElementById("loginScreen");
+    const loginForm = document.getElementById("loginForm");
+    const loginMsg = document.getElementById("loginMsg");
+    const loginBtn = document.getElementById("loginBtn");
+    const webhookInput = document.getElementById("webhookInput");
+    const appEl = document.getElementById("app");
 
-    window.addEventListener("storage", (e) => {
-      if (e.key === "SURVEY_SUBMISSIONS") render();
-      if (e.key === "SURVEY_WEBHOOK_URL") updateWebhookUI();
+    const getToken = () => { try { return sessionStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; } };
+    const setToken = (t) => { try { t ? sessionStorage.setItem(TOKEN_KEY, t) : sessionStorage.removeItem(TOKEN_KEY); } catch { /* ignore */ } };
+    const getUrl = () => localStorage.getItem("SURVEY_WEBHOOK_URL") || DEFAULT_WEBHOOK_URL;
+    webhookInput.value = localStorage.getItem("SURVEY_WEBHOOK_URL") || "";
+
+    const MSGS = {
+      bad_login: "اليوزر أو الباس غلط",
+      dash_not_set: "لسه ما اتكتبش يوزر وباس في خصائص سكريبت الجدول (DASH_USER و DASH_PASS، والباس ١٢ حرف على الأقل)",
+      expired: "الجلسة خلصت، ادخل تاني",
+      down: "الجدول مش بيرد، جرّب تاني بعد شوية",
+      old_script: "حدّث سكريبت الجدول: الكود المنشور قديم. الصق محتوى google-sheets-script.js الجديد في Apps Script واعمل «نشر جديد»"
+    };
+
+    async function callSheet(body) {
+      let res;
+      try {
+        res = await fetch(getUrl(), {
+          method: "POST",
+          cache: "no-cache",
+          headers: { "Content-Type": "text/plain;charset=utf-8" },
+          body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error("http " + res.status);
+        return await res.json();
+      } catch (err) {
+        return { result: "down" };
+      }
+    }
+
+    // يرجّع رسالة خطأ للمستخدم، أو "" لو الرد سليم
+    function explain(reply) {
+      if (!reply || reply.result === "down") return MSGS.down;
+      if (reply.result === "success") return "";
+      if (reply.result === "bad_login") return MSGS.bad_login;
+      if (reply.result === "unauthorized") return MSGS.expired;
+      if (reply.result === "locked") {
+        const mins = Math.max(1, Math.ceil((reply.retryAfter || 900) / 60));
+        return "الدخول اتقفل بعد محاولات غلط كتير. جرّب تاني بعد " + AR(mins) + " دقيقة";
+      }
+      if (reply.error === "dash_not_set") return MSGS.dash_not_set;
+      if (reply.result === "error") return MSGS.old_script;
+      return MSGS.down;
+    }
+
+    function showLogin(message) {
+      appEl.hidden = true;
+      loginScreen.hidden = false;
+      loginMsg.textContent = message || "";
+    }
+
+    // يقرا الردود من الجدول ويعرض اللوحة. يرجّع رسالة خطأ أو ""
+    async function loadResponses() {
+      const reply = await callSheet({ action: "read", token: getToken() });
+      const err = explain(reply);
+      if (err) return err;
+      remoteRows = Array.isArray(reply.responses) ? reply.responses : [];
+      loginScreen.hidden = true;
+      appEl.hidden = false;
+      render();
+      return "";
+    }
+
+    loginForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      loginMsg.textContent = "";
+      loginBtn.disabled = true;
+      loginBtn.textContent = "جاري الدخول…";
+      try {
+        const typedUrl = webhookInput.value.trim();
+        if (typedUrl) localStorage.setItem("SURVEY_WEBHOOK_URL", typedUrl); else localStorage.removeItem("SURVEY_WEBHOOK_URL");
+        const reply = await callSheet({
+          action: "login",
+          user: document.getElementById("loginUser").value,
+          pass: document.getElementById("loginPass").value
+        });
+        const err = explain(reply);
+        if (err) { loginMsg.textContent = err; return; }
+        if (!reply.token) { loginMsg.textContent = MSGS.old_script; return; }
+        setToken(reply.token);
+        document.getElementById("loginPass").value = "";
+        const loadErr = await loadResponses();
+        if (loadErr) { setToken(""); loginMsg.textContent = loadErr; }
+      } finally {
+        loginBtn.disabled = false;
+        loginBtn.textContent = "دخول";
+      }
     });
+
+    document.getElementById("refreshBtn").addEventListener("click", async () => {
+      const btn = document.getElementById("refreshBtn");
+      btn.disabled = true;
+      const err = await loadResponses();
+      btn.disabled = false;
+      if (err === MSGS.expired) { setToken(""); remoteRows = []; showLogin(err); }
+      else if (err) alert(err);
+    });
+
+    document.getElementById("logoutBtn").addEventListener("click", async () => {
+      const token = getToken();
+      setToken("");
+      if (token) await callSheet({ action: "logout", token });
+      location.reload();
+    });
+
+    // لو فيه مفتاح دخول محفوظ في التبويب ده: نحاول نقرا بيه، وإلا شاشة الدخول
+    if (getToken()) {
+      loadResponses().then((err) => {
+        if (err) { setToken(""); showLogin(err); }
+      });
+    }
   </script>
 </body>
 

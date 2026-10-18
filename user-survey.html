@@ -467,8 +467,9 @@
     update();
 
     const ivBtn = document.getElementById("ivBtn");
-    ivBtn.addEventListener("click", () => ivBtn.setAttribute("aria-pressed", document.body.classList.toggle("interview")));
-    document.getElementById("printBtn").addEventListener("click", () => window.print());
+    if (ivBtn) ivBtn.addEventListener("click", () => ivBtn.setAttribute("aria-pressed", document.body.classList.toggle("interview")));
+    const printBtn = document.getElementById("printBtn");
+    if (printBtn) printBtn.addEventListener("click", () => window.print());
   </script>
   <script src="survey-handler.js"></script>
 </body>

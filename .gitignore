@@ -1,0 +1,5 @@
+# Not needed by the public pages: keep these on this computer only
+internal/
+pages/
+doctor-survey.md
+surveys-log.md
